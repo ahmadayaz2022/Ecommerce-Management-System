@@ -1,0 +1,26 @@
+/* src/App.css */
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+@media screen and (max-width: 768px) {
+  table, thead, tbody, th, td, tr {
+    display: block;
+  }
+
+  th, td {
+    padding: 10px;
+    text-align: right;
+    position: relative;
+  }
+
+  th::before, td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 0;
+    font-weight: bold;
+    text-align: left;
+  }
+}
