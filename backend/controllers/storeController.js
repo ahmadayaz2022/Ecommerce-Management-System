@@ -34,3 +34,62 @@ exports.getStores = async (req, res) => {
   }
 };
 
+//for delete button
+
+exports.deleteStore = async (req, res) => {
+  try {
+    const storeId = req.params.id;
+
+    // 1️⃣ Find store created by logged-in super admin
+    const store = await Store.findOne({
+      _id: storeId,
+      createdBy: req.user.id,
+    });
+
+    if (!store) {
+      return res.status(404).json({ message: "Store not found" });
+    }
+
+    // 2️⃣ Delete store
+    await Store.deleteOne({ _id: storeId });
+
+    res.json({ message: "Store deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+//Edit store
+
+exports.editStore = async (req, res) => {
+  try {
+    const storeId = req.params.id;
+    const { storeName, storeLocation, storeEmail } = req.body;
+
+    // 1️⃣ Find store created by logged-in super admin
+    const store = await Store.findOne({
+      _id: storeId,
+      createdBy: req.user.id,
+    });
+
+    if (!store) {
+      return res.status(404).json({ message: "Store not found" });
+    }
+
+    // 2️⃣ Update fields
+    store.storeName = storeName;
+    store.storeLocation = storeLocation;
+    store.storeEmail = storeEmail;
+
+    // 3️⃣ Save updated store
+    await store.save();
+
+    res.json({
+      // message: "Store updated successfully",
+      store,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+

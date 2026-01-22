@@ -5,30 +5,32 @@ import EmployeeForm from "./EmployeeForm";
 const Employees = () => {
   const [employees, setEmployees] = useState([]);
   const [stores, setStores] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
 
+  // Fetch employees
   const fetchEmployees = async () => {
     try {
       const res = await axios.get("/employees");
       setEmployees(res.data);
     } catch (err) {
-      console.log(err.response?.data?.message || err.message);
+      console.log(err);
     }
   };
 
+  // Fetch stores
   const fetchStores = async () => {
     try {
-      const res = await axios.get("/stores");
+      const res = await axios.get("/stores"); // Backend must return all stores
       setStores(res.data);
-    } catch {}
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   useEffect(() => {
     fetchEmployees();
-    fetchStores();
-    setLoading(false);
+    fetchStores(); // important!
   }, []);
 
   const openModal = (employee = null) => {
@@ -40,8 +42,6 @@ const Employees = () => {
     setShowModal(false);
     setSelectedEmployee(null);
   };
-
-  if (loading) return <p>Loading employees...</p>;
 
   return (
     <div>
@@ -56,29 +56,40 @@ const Employees = () => {
             <th>Actions</th>
           </tr>
         </thead>
+{
         <tbody>
-          {employees.map(emp => (
-            <tr key={emp._id}>
-              <td>{emp.name}</td>
-              <td>{emp.email}</td>
-              <td>{emp.store?.name || "N/A"}</td>
-              <td>
-                <button onClick={() => openModal(emp)}>Edit</button>
-                <button onClick={async () => {
-                  if (!window.confirm("Delete this employee?")) return;
-                  await axios.delete(`/employees/${emp._id}`);
-                  setEmployees(employees.filter(e => e._id !== emp._id));
-                }}>Delete</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
+  {employees.map(emp => (
+    <tr key={emp._id}> 
+      <td>{emp.name}</td>
+      <td>{emp.email}</td>
+      <td>
+        {stores.find(stores => stores._id === emp.store)?.storeName }
+      </td>
+      <td>
+
+        <button onClick={() => openModal(emp)}>Edit</button>
+        <button
+          onClick={async () => {
+            if (!window.confirm("Delete this employee?")) return;
+await axios.delete(`/employees/${emp._id}`);
+setEmployees(employees.filter(e => e._id !== emp._id));
+
+          }}
+        >
+          Delete
+        </button>
+      </td>
+    </tr>
+  ))}
+</tbody>
+        }
+
       </table>
 
       {showModal && (
         <EmployeeForm
           employee={selectedEmployee}
-          stores={stores}
+          stores={stores} // ✅ pass stores here
           onClose={closeModal}
           onSaved={fetchEmployees}
         />

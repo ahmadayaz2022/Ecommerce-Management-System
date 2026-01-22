@@ -2,11 +2,26 @@ import { useState, useEffect } from "react";
 import axios from "../../api/axios";
 
 const EmployeeForm = ({ employee, stores, onClose, onSaved }) => {
-  const [name, setName] = useState(employee?.name || "");
-  const [email, setEmail] = useState(employee?.email || "");
-  const [password, setPassword] = useState(""); // Only for new employee or reset
-  const [storeId, setStoreId] = useState(employee?.store?._id || "");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [storeId, setStoreId] = useState("");
+
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (employee) {
+      setName(employee.name);
+      setEmail(employee.email);
+      setStoreId(employee.store || "");
+      setPassword("");
+    } else {
+      setName("");
+      setEmail("");
+      setStoreId("");
+      setPassword("");
+    }
+  }, [employee]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -14,18 +29,47 @@ const EmployeeForm = ({ employee, stores, onClose, onSaved }) => {
 
     try {
       if (employee?._id) {
-        await axios.put(`/employees/${employee._id}`, { name, email, storeId });
+        await axios.put(`/employees/${employee._id}`, {
+          name,
+          email,
+          store: storeId,
+        });
       } else {
         await axios.post("/employees", { name, email, password, storeId });
       }
-      onSaved();
-      onClose();
+
+      onSaved(); // refresh employee list
+      onClose(); // close modal
     } catch (err) {
       alert(err.response?.data?.message || "Save failed");
     } finally {
       setLoading(false);
     }
   };
+
+// const handleSubmit = async (e) => {
+//   e.preventDefault();
+//   setLoading(true);
+
+//   try {
+//     const payload = { name, email, store: storeId };
+//     if (!employee && password) payload.password = password; // include password only for new
+
+//     if (employee?._id) {
+//       await axios.put(`/employees/${employee._id}`, payload);
+//     } else {
+//       await axios.post("/employees", payload);
+//     }
+
+//     onSaved();
+//     onClose();
+//   } catch (err) {
+//     alert(err.response?.data?.message || "Save failed");
+//   } finally {
+//     setLoading(false);
+//   }
+// };
+
 
   return (
     <div style={modalStyle}>
@@ -38,7 +82,8 @@ const EmployeeForm = ({ employee, stores, onClose, onSaved }) => {
           onChange={(e) => setName(e.target.value)}
           required
         />
-        <br /><br />
+        <br />
+        <br />
         <input
           type="email"
           placeholder="Email"
@@ -46,7 +91,8 @@ const EmployeeForm = ({ employee, stores, onClose, onSaved }) => {
           onChange={(e) => setEmail(e.target.value)}
           required
         />
-        <br /><br />
+        <br />
+        <br />
         {!employee && (
           <>
             <input
@@ -56,16 +102,26 @@ const EmployeeForm = ({ employee, stores, onClose, onSaved }) => {
               onChange={(e) => setPassword(e.target.value)}
               required
             />
-            <br /><br />
+            <br />
+            <br />
           </>
         )}
-        <select value={storeId} onChange={(e) => setStoreId(e.target.value)} required>
-          <option value="">Select Store</option>
-          {stores.map(store => (
-            <option key={store._id} value={store._id}>{store.name}</option>
-          ))}
-        </select>
-        <br /><br />
+        {
+          <select
+            value={storeId}
+            onChange={(e) => setStoreId(e.target.value)}
+            required
+          >
+            <option value="">Select Store</option>
+            {stores.map((store) => (
+              <option key={store._id} value={store._id}>
+                {store.storeName}
+              </option>
+            ))}
+          </select>
+        }
+        <br />
+        <br />
         <button type="submit" disabled={loading}>
           {loading ? "Saving..." : "Save"}
         </button>
