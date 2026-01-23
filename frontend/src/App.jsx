@@ -8,7 +8,12 @@ import ProtectedRoute from "./routes/ProtectedRoute";
 import AdminLayout from "./pages/Admin/AdminLayout";
 import AdminDashboard from "./pages/Admin/Dashboard";
 import Stores from "./pages/Admin/Stores";
+import DashboardStores from "./pages/Admin/DashboardStores";
+
+import StorePage from "./pages/Admin/StorePage";
+
 import Employees from "./pages/Admin/Employees";
+import StoreDetails from "./pages/Admin/StoreDetails";
 
 // Employee Pages
 import EmployeeLayout from "./pages/Employee/EmployeeLayout";
@@ -29,10 +34,25 @@ function App() {
             </ProtectedRoute>
           }
         >
+          {/* Dashboard */}
           <Route path="dashboard" element={<AdminDashboard />} />
+          {/* <Route path="dashboard/stores" element={<StoreDetails />} /> */}
+
+          <Route path="dashboard/stores" element={<DashboardStores />} />
+          <Route path="store/:storeId" element={<StorePage />} />
+
+          {/* Stores */}
           <Route path="stores" element={<Stores />} />
+          <Route path="stores/:storeId" element={<StoreDetails />} />
+
+          {/* Employees */}
           <Route path="employees" element={<Employees />} />
+          <Route path="dashboard/employees" element={<Employees />} />
+
+
         </Route>
+
+
 
         {/* Employee Routes */}
         <Route

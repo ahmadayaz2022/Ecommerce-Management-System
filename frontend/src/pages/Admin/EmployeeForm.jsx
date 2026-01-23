@@ -32,45 +32,25 @@ const EmployeeForm = ({ employee, stores, onClose, onSaved }) => {
         await axios.put(`/employees/${employee._id}`, {
           name,
           email,
-          store: storeId,
+          storeId, // fix here
         });
       } else {
-        await axios.post("/employees", { name, email, password, storeId });
+        await axios.post("/employees", {
+          name,
+          email,
+          password,
+          storeId, // fix here
+        });
       }
 
-      onSaved(); // refresh employee list
-      onClose(); // close modal
+      onSaved();
+      onClose();
     } catch (err) {
       alert(err.response?.data?.message || "Save failed");
     } finally {
       setLoading(false);
     }
   };
-
-// const handleSubmit = async (e) => {
-//   e.preventDefault();
-//   setLoading(true);
-
-//   try {
-//     const payload = { name, email, store: storeId };
-//     if (!employee && password) payload.password = password; // include password only for new
-
-//     if (employee?._id) {
-//       await axios.put(`/employees/${employee._id}`, payload);
-//     } else {
-//       await axios.post("/employees", payload);
-//     }
-
-//     onSaved();
-//     onClose();
-//   } catch (err) {
-//     alert(err.response?.data?.message || "Save failed");
-//   } finally {
-//     setLoading(false);
-//   }
-// };
-
-
   return (
     <div style={modalStyle}>
       <h3>{employee ? "Edit Employee" : "Add Employee"}</h3>
@@ -81,6 +61,12 @@ const EmployeeForm = ({ employee, stores, onClose, onSaved }) => {
           value={name}
           onChange={(e) => setName(e.target.value)}
           required
+          style={{
+            width: "150px", 
+            height: "15px", 
+            fontSize: "16px", 
+            padding: "10px", 
+          }}
         />
         <br />
         <br />
@@ -90,6 +76,12 @@ const EmployeeForm = ({ employee, stores, onClose, onSaved }) => {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
+          style={{
+            width: "150px", // Increase width
+            height: "15px", // Increase height
+            fontSize: "16px", // Increase text size
+            padding: "10px", // Add inner spacing
+          }}
         />
         <br />
         <br />
@@ -101,6 +93,12 @@ const EmployeeForm = ({ employee, stores, onClose, onSaved }) => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              style={{
+                width: "150px", // Increase width
+                height: "15px", // Increase height
+                fontSize: "16px", // Increase text size
+                padding: "10px", // Add inner spacing
+              }}
             />
             <br />
             <br />
@@ -111,8 +109,22 @@ const EmployeeForm = ({ employee, stores, onClose, onSaved }) => {
             value={storeId}
             onChange={(e) => setStoreId(e.target.value)}
             required
+            style={{
+              width: "160px", // Increase width
+              height: "25px", // Increase height
+              fontSize: "15px", // Increase text size
+            }}
           >
-            <option value="">Select Store</option>
+            <option
+              value=""
+              style={{
+                width: "100px", // Increase width
+                height: "15px", // Increase height
+                fontSize: "16px", // Increase text size
+              }}
+            >
+              Select Store
+            </option>
             {stores.map((store) => (
               <option key={store._id} value={store._id}>
                 {store.storeName}
@@ -138,10 +150,12 @@ const modalStyle = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  background: "#fff",
-  padding: "20px",
+  background: "#E3E3E3",
+  padding: "50px",
   boxShadow: "0 0 10px rgba(0,0,0,0.3)",
   zIndex: 1000,
+  height: "300px",
+  width: "200px",
 };
 
 export default EmployeeForm;

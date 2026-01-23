@@ -1,53 +1,43 @@
 import { useState, useEffect } from "react";
 import axios from "../../api/axios";
-import { useNavigate } from "react-router-dom";
 
 const EmployeeDashboard = () => {
   const [store, setStore] = useState(null);
+  const [employeeName, setEmployeeName] = useState("Employee");
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
-
-  // Fetch assigned store
-  const fetchStore = async () => {
-    try {
-      const res = await axios.get("/employee/store"); // API: returns assigned store
-      setStore(res.data);
-    } catch (err) {
-      console.log(err.response?.data?.message || err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
-    fetchStore();
+    const fetchDashboard = async () => {
+      try {
+        const res = await axios.get("/employees/dashboard");
+        setStore(res.data.store || null);
+        setEmployeeName(res.data.employee?.name || "Employee");
+      } catch (err) {
+        console.log(err.response?.data?.message || err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDashboard();
   }, []);
 
-  // Logout
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("role");
-    navigate("/login");
-  };
-
-  if (loading) return <p>Loading your store...</p>;
+  if (loading) return <p>Loading your dashboard...</p>;
 
   return (
     <div style={{ padding: "20px" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <h1>Employee Dashboard</h1>
-        <button onClick={handleLogout}>Logout</button>
-      </div>
+      {/* Only show welcome and store info */}
+      <h2>Welcome, {employeeName}! to {store.storeName}</h2>
 
       {store ? (
         <div style={{ marginTop: "40px" }}>
           <h2>Your Store</h2>
-          <p><strong>Name:</strong> {store.name}</p>
-          <p><strong>Location:</strong> {store.location}</p>
-          <p><strong>Number of Employees:</strong> {store.employees?.length || 0}</p>
+          <p><strong>Name:</strong> {store.storeName}</p>
+          <p><strong>Location:</strong> {store.storeLocation}</p>
+          <p><strong>Email:</strong> {store.storeEmail}</p>
         </div>
       ) : (
-        <p>You are not assigned to any store.</p>
+        <p style={{ marginTop: "20px" }}>You are not assigned to any store.</p>
       )}
     </div>
   );

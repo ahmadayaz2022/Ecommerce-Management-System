@@ -1,30 +1,29 @@
 const Store = require("../models/Store");
+const User = require("../models/User");
 
-// Create store (SuperAdmin only)
+// Create Store (SuperAdmin only)
 exports.createStore = async (req, res) => {
   try {
-    const { storeName,storeLocation, storeEmail } = req.body;
+    const { storeName, storeLocation, storeEmail } = req.body;
 
     const store = await Store.create({
       storeName,
       storeLocation,
       storeEmail,
-      createdBy: req.user.id
+      createdBy: req.user.id, // super admin ID from auth middleware
     });
 
     res.status(201).json({
-      // message: "Store created successfully",
       storeName: store.storeName,
       storeLocation: store.storeLocation,
-      storeEmail: store.storeEmail
+      storeEmail: store.storeEmail,
     });
-
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-// Get all stores (SuperAdmin)
+// Get all Stores for SuperAdmin
 exports.getStores = async (req, res) => {
   try {
     const stores = await Store.find({ createdBy: req.user.id });
@@ -34,15 +33,11 @@ exports.getStores = async (req, res) => {
   }
 };
 
-//for delete button
-
-exports.deleteStore = async (req, res) => {
+// Get single Store by ID
+exports.getStoreById = async (req, res) => {
   try {
-    const storeId = req.params.id;
-
-    // 1️⃣ Find store created by logged-in super admin
     const store = await Store.findOne({
-      _id: storeId,
+      _id: req.params.id,
       createdBy: req.user.id,
     });
 
@@ -50,23 +45,19 @@ exports.deleteStore = async (req, res) => {
       return res.status(404).json({ message: "Store not found" });
     }
 
-    // 2️⃣ Delete store
-    await Store.deleteOne({ _id: storeId });
-
-    res.json({ message: "Store deleted successfully" });
+    res.json(store);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-//Edit store
-
+// Edit Store
 exports.editStore = async (req, res) => {
   try {
     const storeId = req.params.id;
     const { storeName, storeLocation, storeEmail } = req.body;
 
-    // 1️⃣ Find store created by logged-in super admin
+    // 1️⃣ Find store owned by logged-in super admin
     const store = await Store.findOne({
       _id: storeId,
       createdBy: req.user.id,
@@ -85,7 +76,7 @@ exports.editStore = async (req, res) => {
     await store.save();
 
     res.json({
-      // message: "Store updated successfully",
+      message: "Store updated successfully",
       store,
     });
   } catch (error) {
@@ -93,3 +84,30 @@ exports.editStore = async (req, res) => {
   }
 };
 
+// Delete Store
+exports.deleteStore = async (req, res) => {
+  try {
+    const storeId = req.params.id;
+
+    // 1️⃣ Find store owned by logged-in super admin
+    const store = await Store.findOne({
+      _id: storeId,
+      createdBy: req.user.id,
+    });
+
+    if (!store) {
+      return res.status(404).json({ message: "Store not found" });
+    }
+
+    // 2️⃣ Delete store
+    await Store.deleteOne({ _id: storeId });
+
+    await User.deleteMany({ store: storeId });
+
+
+
+    res.json({ message: "Store deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

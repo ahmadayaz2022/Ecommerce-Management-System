@@ -18,6 +18,8 @@ app.use("/api/auth", authRoutes);
 app.use("/api/stores", storeRoutes);
 app.use("/api/employees", employeeRoutes);
 
+
+
 app.get("/", (req, res) => {
   res.send("Ecommerce Backend Running...");
 });

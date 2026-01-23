@@ -6,8 +6,6 @@ const StoreForm = ({ store, onClose, onSaved }) => {
   const [storeLocation, setLocation] = useState(store?.storeLocation || "");
   const [storeEmail, setEmail] = useState(store?.storeEmail || "");
 
-  
-
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
@@ -17,7 +15,11 @@ const StoreForm = ({ store, onClose, onSaved }) => {
     try {
       if (store?._id) {
         // Edit existing store
-        await axios.put(`/stores/${store._id}`, { storeName, storeLocation, storeEmail });
+        await axios.put(`/stores/${store._id}`, {
+          storeName,
+          storeLocation,
+          storeEmail,
+        });
       } else {
         // Add new store
         await axios.post("/stores", { storeName, storeLocation, storeEmail });
@@ -41,24 +43,43 @@ const StoreForm = ({ store, onClose, onSaved }) => {
           value={storeName}
           onChange={(e) => setName(e.target.value)}
           required
+          style={{
+            width: "150px",
+            height: "15px",
+            fontSize: "16px",
+            padding: "10px",
+          }}
         />
-        <br /><br />
+        <br />
+        <br />
         <input
           type="text"
           placeholder="Location"
           value={storeLocation}
           onChange={(e) => setLocation(e.target.value)}
           required
+          style={{
+            width: "150px",
+            height: "15px",
+            fontSize: "16px",
+            padding: "10px",
+          }}
         />
-        <br /><br />
+        <br />
+        <br />
         <input
           type="text"
           placeholder="Email"
           value={storeEmail}
           onChange={(e) => setEmail(e.target.value)}
           required
-        />    
-
+          style={{
+            width: "150px",
+            height: "15px",
+            fontSize: "16px",
+            padding: "10px",
+          }}
+        />
 
         <button type="submit" disabled={loading}>
           {loading ? "Saving..." : "Save"}
@@ -77,11 +98,10 @@ const modalStyle = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  background: "#fff",
+  background: "#E3E3E3",
   padding: "20px",
   boxShadow: "0 0 10px rgba(0,0,0,0.3)",
   zIndex: 1000,
 };
 
 export default StoreForm;
-
