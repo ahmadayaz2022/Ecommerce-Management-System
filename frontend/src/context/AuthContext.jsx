@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect } from "react";
 
 export const AuthContext = createContext();
 
@@ -8,6 +8,13 @@ export const AuthProvider = ({ children }) => {
     role: localStorage.getItem("role"),
   });
 
+  useEffect(() => {
+    if (!auth.token) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("role");
+    }
+  }, [auth.token]);
+
   const login = (token, role) => {
     localStorage.setItem("token", token);
     localStorage.setItem("role", role);
@@ -15,9 +22,12 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    localStorage.clear();
-    setAuth({ token: null, role: null });
-  };
+  localStorage.removeItem("token");
+  localStorage.removeItem("role");
+  setAuth({ token: null, role: null }); // triggers re-render
+  window.location.href = "/login";
+};
+
 
   return (
     <AuthContext.Provider value={{ auth, login, logout }}>
