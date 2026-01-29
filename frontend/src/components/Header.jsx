@@ -1,7 +1,7 @@
 import { useContext } from "react";
-import { AuthContext } from "../../context/AuthContext";
+import { AuthContext } from "../context/AuthContext";
 
-export default function Header() {
+const Header = () =>  {
   const { logout } = useContext(AuthContext);
   const role = localStorage.getItem("role");
 
@@ -17,3 +17,4 @@ export default function Header() {
     </div>
   );
 }
+export default Header;
