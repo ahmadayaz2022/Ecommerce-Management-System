@@ -16,8 +16,8 @@ const Sidebar = () => {
   const menuItems = [
     { name: "Dashboard", path: "/admin/dashboard", icon: <LayoutDashboard size={20} /> },
     { name: "Add Stores", path: "/admin/stores", icon: <Store size={20} /> },
-    { name: "See Stores", path: "/admin/seestores", icon: <Eye size={20} /> },
-    { name: "See Employees", path: "/admin/seeemployees", icon: <Users size={20} /> },
+    { name: "See Stores", path: "/admin/seeStores", icon: <Eye size={20} /> },
+    { name: "See Employees", path: "/admin/seeEmployees", icon: <Users size={20} /> },
   ];
 
   const toggleSidebar = () => {
