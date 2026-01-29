@@ -1,6 +1,5 @@
-// components/layout/Layout.jsx
 import Sidebar from "./Sidebar";
-import Header from "./layout/Header";
+import Header from "./Header.jsx";
 
 export default function Layout({ children }) {
   return (
