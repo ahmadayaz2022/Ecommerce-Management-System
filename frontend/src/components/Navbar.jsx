@@ -5,8 +5,9 @@ const Navbar = ({ title }) => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    // ✅ match your app auth logic
-    localStorage.removeItem("userInfo");
+    //  match your app auth logic
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
     navigate("/login");
   };
 
@@ -23,32 +24,43 @@ const Navbar = ({ title }) => {
 
 const styles = {
   navbar: {
-    height: "60px",
+    height: "85px",
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    padding: "0 24px",
-    backgroundColor: "#1976d2",
+    padding: "0 28px",
+    background: "linear-gradient(90deg, #1e3a8a, #2563eb)",
     color: "#ffffff",
-    boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
+    boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
   },
 
   title: {
-    fontSize: "20px",
-    fontWeight: "600",
+    fontSize: "25px",
+    fontWeight: "800",
     margin: 0,
+    letterSpacing: "0.4px",
   },
 
   logoutBtn: {
     backgroundColor: "#ffffff",
-    color: "#1976d2",
+    color: "#dc2626",
     border: "none",
-    padding: "6px 14px",
-    borderRadius: "6px",
-    fontSize: "14px",
+    padding: "10px 22px",
+    borderRadius: "10px",
+    fontSize: "15px",
+    fontWeight: "700",
     cursor: "pointer",
-    transition: "0.2s ease",
+    boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+    transition: "all 0.2s ease",
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
+
   },
+
+
+
 };
 
 export default Navbar;
+
