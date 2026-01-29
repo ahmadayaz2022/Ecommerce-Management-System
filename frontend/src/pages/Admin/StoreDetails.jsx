@@ -1,4 +1,3 @@
-// pages/Admin/StoreDetails.jsx
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "../../api/axios";
@@ -24,7 +23,11 @@ const StoreDetails = () => {
       // 2️⃣ Get all employees
       const empRes = await axios.get("/employees");
       // filter employees of this store
-      const storeEmployees = empRes.data.filter(emp => emp.store === storeId);
+      const storeEmployees = empRes.data.filter((emp) => emp.store === storeId);
+//       const storeEmployees = res.data.filter(
+//   emp => emp.store && emp.store._id === id
+// );
+
       setEmployees(storeEmployees);
     } catch (err) {
       console.log(err.response?.data?.message || err.message);
@@ -47,9 +50,15 @@ const StoreDetails = () => {
     setSelectedEmployee(null);
   };
 
-  if (loading) return <p style={{ textAlign: "center", marginTop: "50px" }}>Loading store...</p>;
+  if (loading)
+    return (
+      <p style={{ textAlign: "center", marginTop: "50px" }}>Loading store...</p>
+    );
 
-  if (!store) return <p style={{ textAlign: "center", marginTop: "50px" }}>Store not found.</p>;
+  if (!store)
+    return (
+      <p style={{ textAlign: "center", marginTop: "50px" }}>Store not found.</p>
+    );
 
   return (
     <div style={{ padding: "20px" }}>
@@ -58,7 +67,8 @@ const StoreDetails = () => {
         {store.storeName} - Employees
       </h1>
       <p style={{ marginBottom: "20px", color: "#6b7280" }}>
-        Location: {store.storeLocation || "N/A"} | Email: {store.storeEmail || "N/A"}
+        Location: {store.storeLocation || "N/A"} | Email:{" "}
+        {store.storeEmail || "N/A"}
       </p>
 
       {/* Add Employee Button */}
@@ -106,8 +116,12 @@ const StoreDetails = () => {
                   borderBottom: "1px solid #e5e7eb",
                   transition: "background-color 0.2s",
                 }}
-                onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#f9fafb")}
-                onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#fff")}
+                onMouseOver={(e) =>
+                  (e.currentTarget.style.backgroundColor = "#f9fafb")
+                }
+                onMouseOut={(e) =>
+                  (e.currentTarget.style.backgroundColor = "#fff")
+                }
               >
                 <td style={{ padding: "12px" }}>{emp.name}</td>
                 <td style={{ padding: "12px" }}>{emp.email}</td>
@@ -122,8 +136,12 @@ const StoreDetails = () => {
                       borderRadius: "6px",
                       cursor: "pointer",
                     }}
-                    onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#d97706")}
-                    onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#f59e0b")}
+                    onMouseOver={(e) =>
+                      (e.currentTarget.style.backgroundColor = "#d97706")
+                    }
+                    onMouseOut={(e) =>
+                      (e.currentTarget.style.backgroundColor = "#f59e0b")
+                    }
                   >
                     Edit
                   </button>
@@ -141,8 +159,12 @@ const StoreDetails = () => {
                       borderRadius: "6px",
                       cursor: "pointer",
                     }}
-                    onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#b91c1c")}
-                    onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#ef4444")}
+                    onMouseOver={(e) =>
+                      (e.currentTarget.style.backgroundColor = "#b91c1c")
+                    }
+                    onMouseOut={(e) =>
+                      (e.currentTarget.style.backgroundColor = "#ef4444")
+                    }
                   >
                     Delete
                   </button>
