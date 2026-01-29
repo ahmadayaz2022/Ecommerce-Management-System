@@ -32,7 +32,7 @@ const StorePage = () => {
       <p style={{ color: "#6b7280" }}>{store.storeLocation}</p>
       <p style={{ color: "#6b7280" }}>{store.storeEmail}</p>
       <h2 style={{ marginTop: "20px", fontStyle: "italic", color: "red" }}>
-        This is {store.storeName} .  will develop store features here later.
+        This is {store.storeName}, will develop store features here later.
       </h2>
     </div>
   );
