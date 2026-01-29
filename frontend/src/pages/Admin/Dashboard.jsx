@@ -4,7 +4,7 @@ const AdminDashboard = () => {
   const actionCards = [
     {
       to: "/admin/stores",
-      title: "Add Stores",
+      title: "Add Store",
       emoji: "🏪",
       color: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
       description: "Create new stores"
@@ -16,13 +16,15 @@ const AdminDashboard = () => {
       color: "linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)",
       description: "View all stores"
     },
-    {
-      to: "employees",
-      title: "Add Employee",
-      emoji: "👤",
-      color: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
-      description: "Register new team members to stores"
-    },
+    // {
+    //   to: "employees",
+    //   title: "Add Employee",
+    //   emoji: "👤",
+    //   color: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+    //   description: "Register new team members to stores"
+    // },
+
+
     {
       to: "employees",
       title: "See Employees",
@@ -30,6 +32,7 @@ const AdminDashboard = () => {
       color: "linear-gradient(135deg, #0ea5e9 0%, #3b82f6 100%)",
       description: "Browse All employee"
     }
+
   ];
 
   return (
