@@ -4,39 +4,57 @@ require("dotenv").config();
 
 const User = require("./models/User");
 
-const CHANGE_PASSWORD = false; // 🔥 set true ONLY when you want to change password
-const NEW_PASSWORD = "ahmad111"; // 👈 change password here
+const CHANGE_PASSWORD = false; // 🔥 set true ONLY when changing password
+const CHANGE_EMAIL = false;    // 🔥 set true ONLY when changing email
 
-mongoose.connect(process.env.MONGO_URI)
+const NEW_PASSWORD = "ahmad123";
+const NEW_EMAIL = "admin123@gmail.com";
+
+mongoose
+  .connect(process.env.MONGO_URI)
   .then(async () => {
-    const adminExists = await User.findOne({ role: "superadmin" });
+    const admin = await User.findOne({ role: "superadmin" });
 
-    // Normal behavior (no change)
-    if (adminExists && !CHANGE_PASSWORD) {
-      console.log("SuperAdmin already exists");
+    // ❌ SuperAdmin not found → create first time
+    if (!admin) {
+      const hashedPassword = await bcrypt.hash("123456", 10);
+
+      await User.create({
+        name: "Super Admin",
+        email: "admin@gmail.com",
+        password: hashedPassword,
+        role: "superadmin",
+      });
+
+      console.log("✅ SuperAdmin created successfully");
       process.exit();
     }
 
-    // Manual password change
-    if (adminExists && CHANGE_PASSWORD) {
-      adminExists.password = await bcrypt.hash(NEW_PASSWORD, 10);
-      await adminExists.save();
+    // 🟡 Update operations
+    let updated = false;
 
-      console.log("✅ SuperAdmin password changed");
-      process.exit();
+    if (CHANGE_PASSWORD) {
+      admin.password = await bcrypt.hash(NEW_PASSWORD, 10);
+      updated = true;
+      console.log("🔐 Password updated");
     }
 
-    // 🆕 First-time creation
-    const hashedPassword = await bcrypt.hash("123456", 10);
+    if (CHANGE_EMAIL) {
+      admin.email = NEW_EMAIL;
+      updated = true;
+      console.log("📧 Email updated");
+    }
 
-    await User.create({
-      name: "Super Admin",
-      email: "admin@gmail.com",
-      password: hashedPassword,
-      role: "superadmin"
-    });
+    if (!updated) {
+      console.log("ℹ️ No changes requested");
+    } else {
+      await admin.save();
+      console.log("✅ SuperAdmin updated successfully");
+    }
 
-    console.log("SuperAdmin created successfully");
     process.exit();
   })
-  .catch(err => console.log(err));
+  .catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });
