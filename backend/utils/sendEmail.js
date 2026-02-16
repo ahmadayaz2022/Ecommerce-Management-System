@@ -1,3 +1,4 @@
+
 const nodemailer = require("nodemailer");
 
 const sendEmail = async (to, subject, html) => {
@@ -16,7 +17,7 @@ const sendEmail = async (to, subject, html) => {
     console.log("SMTP Connected");
 
     await transporter.sendMail({
-      from: `"superadmin Admin" <${process.env.EMAIL_USER}>`,
+      from: `"Ecommerce Store" <${process.env.EMAIL_USER}>`,
       to,
       subject,
       html,
