@@ -1,7 +1,9 @@
-
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 // SuperAdmin creates employee
+
+
+const sendEmail = require("../utils/sendEmail");
 
 exports.createEmployee = async (req, res) => {
   try {
@@ -25,7 +27,11 @@ exports.createEmployee = async (req, res) => {
     if (userExists) {
       return res.status(400).json({ message: "Employee already exists" });
     }
+
+    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Create employee
     const employee = await User.create({
       name,
       fathername,
@@ -42,31 +48,40 @@ exports.createEmployee = async (req, res) => {
       role: "employee",
       store: storeId,
     });
+
+    // EMAIL CONTENT
+    const emailContent = `
+      <h2>Welcome to Our Company</h2>
+      <p>Hello <b>${name}</b>,</p>
+      <p>Your employee account has been created.</p>
+      <p><b>Email:</b> ${email}</p>
+      <p><b>Password:</b> ${password}</p>
+      <p>Please change your password after first login.</p>
+      <br/>
+      <p>Regards,<br/>Admin Team</p>
+    `;
+
+    // SEND EMAIL
+    await sendEmail(email, "Employee Account Created", emailContent);
+
     res.status(201).json({
-      // message: "Employee created successfully",
+      message: "Employee created and email sent",
       employee: {
         id: employee._id,
         name: employee.name,
-        fathername: employee.fathername,
-        dateOfBirth: employee.dateOfBirth,
-        profilePicture: employee.profilePicture,
-        nationality: employee.nationality,
-        city: employee.city,
-        cnic: employee.cnic,
-        Religion: employee.Religion,
-        PostalAddress: employee.PostalAddress,
-        PhoneNumber: employee.PhoneNumber,
         email: employee.email,
         store: employee.store,
       },
     });
+
   } catch (error) {
-    res.status(500).json({ message: error.message });
     console.log(error);
+    res.status(500).json({ message: error.message });
   }
 };
 
-// //editemployee
+
+ 
 exports.editEmployee = async (req, res) => {
   try {
     const employee = await User.findOne({
@@ -90,15 +105,12 @@ exports.editEmployee = async (req, res) => {
       PostalAddress,
       PhoneNumber,
       email,
-      //
-      
       storeId,
     } = req.body;
 
     employee.name = name;
     employee.email = email;
     employee.store = storeId;
-
     employee.fathername = fathername;
     employee.dateOfBirth = dateOfBirth;
     employee.profilePicture = profilePicture;
@@ -108,18 +120,15 @@ exports.editEmployee = async (req, res) => {
     employee.Religion = Religion;
     employee.PostalAddress = PostalAddress;
     employee.PhoneNumber = PhoneNumber;
-    
-    // 🚫 DO NOT TOUCH PASSWORD HERE
-
+  
     await employee.save();
-
     res.json({ message: "Employee updated successfully", employee });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-// Get all employee
+
 exports.getEmployee = async (req, res) => {
   try {
     const employee = await User.find({ role: "employee" });
@@ -129,7 +138,7 @@ exports.getEmployee = async (req, res) => {
   }
 };
 
-// //deleteemployee
+
 exports.deleteEmployee = async (req, res) => {
   try {
     const employeeId = req.params.id;
@@ -142,6 +151,7 @@ exports.deleteEmployee = async (req, res) => {
     if (!employee) {
       return res.status(404).json({ message: "Employee not found" });
     }
+  
     // 2️ Delete employee
     await User.deleteOne({ _id: employeeId });
     res.json({ message: "Employee deleted successfully" });
@@ -150,7 +160,7 @@ exports.deleteEmployee = async (req, res) => {
   }
 };
 
-// //employeedashboard
+
 exports.employeeDashboard = async (req, res) => {
   try {
     // Find employee and populate store
